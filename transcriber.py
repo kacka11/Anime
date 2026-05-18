@@ -1,10 +1,12 @@
 """语音转文字模块：使用 faster-whisper 转写视频音频。"""
+import json
 import os
 import subprocess
-import json
 from typing import TypedDict
 
-from config import TEXT_DIR, WHISPER_MODEL
+from config import TEXT_DIR, WHISPER_MODEL, FFMPEG_BIN
+
+_FFMPEG = os.path.join(FFMPEG_BIN, "ffmpeg.exe")
 
 
 class Segment(TypedDict):
@@ -17,14 +19,17 @@ def extract_audio(video_path: str) -> str:
     """从视频中提取音频为 WAV。"""
     audio_path = video_path.rsplit(".", 1)[0] + ".wav"
     cmd = [
-        "ffmpeg",
+        _FFMPEG,
         "-i", video_path,
         "-q:a", "0",
         "-map", "a",
         "-y",
         audio_path,
     ]
-    subprocess.run(cmd, check=True, capture_output=True)
+    subprocess.run(
+        cmd, check=True, capture_output=True,
+        encoding="utf-8", errors="replace",
+    )
     return audio_path
 
 

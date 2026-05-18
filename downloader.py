@@ -2,7 +2,7 @@
 import os
 import subprocess
 
-from config import VIDEO_DIR
+from config import VIDEO_DIR, FFMPEG_BIN
 
 COOKIE_FILE = os.path.join(os.path.dirname(__file__), "data", "bilibili_cookies.txt")
 
@@ -19,6 +19,9 @@ def download_video(bvid: str, output_dir: str | None = None) -> str:
     output_path = os.path.join(output_dir, f"{bvid}.mp4")
     url = f"https://www.bilibili.com/video/{bvid}"
 
+    env = os.environ.copy()
+    env["PATH"] = FFMPEG_BIN + os.pathsep + env.get("PATH", "")
+
     cmd = [
         "yt-dlp",
         "--cookies", COOKIE_FILE,
@@ -28,5 +31,5 @@ def download_video(bvid: str, output_dir: str | None = None) -> str:
         url,
     ]
 
-    subprocess.run(cmd, check=True, timeout=300)
+    subprocess.run(cmd, check=True, timeout=300, env=env)
     return output_path

@@ -2,10 +2,10 @@
 import os
 
 # B站 UP主 UID（芊莜-每日二次元速递）
-BILI_UID = os.getenv("BILI_UID", "")
+BILI_UID = os.getenv("BILI_UID", "528881")
 
 # QQ 群号
-QQ_GROUP_ID = os.getenv("QQ_GROUP_ID", "")
+QQ_GROUP_ID = os.getenv("QQ_GROUP_ID", "695751650")
 
 # napcat HTTP API 地址
 NAPCAT_URL = os.getenv("NAPCAT_URL", "http://localhost:3000")
@@ -15,6 +15,14 @@ WHISPER_MODEL = os.getenv("WHISPER_MODEL", "small")
 
 # 场景检测灵敏度 (0~1，越低越敏感)
 SCENE_THRESHOLD = float(os.getenv("SCENE_THRESHOLD", "0.3"))
+
+# ffmpeg 路径（winget 安装的默认路径）
+FFMPEG_BIN = os.path.join(
+    os.path.expandvars(r"%LOCALAPPDATA%"),
+    "Microsoft", "WinGet", "Packages",
+    "Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe",
+    "ffmpeg-8.1.1-full_build", "bin",
+)
 
 # 数据目录
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")

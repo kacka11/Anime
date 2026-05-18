@@ -1,10 +1,12 @@
 """场景检测模块：用 ffmpeg 检测视频画面切换并提取关键帧。"""
 import json
 import os
-import subprocess
 import re
+import subprocess
 
-from config import FRAME_DIR
+from config import FRAME_DIR, FFMPEG_BIN
+
+_FFMPEG = os.path.join(FFMPEG_BIN, "ffmpeg.exe")
 
 
 def detect_scenes(video_path: str, threshold: float = 0.3) -> tuple[list[str], list[float]]:
@@ -24,7 +26,7 @@ def detect_scenes(video_path: str, threshold: float = 0.3) -> tuple[list[str], l
     output_pattern = os.path.join(output_dir, "frame_%04d.jpg")
 
     cmd = [
-        "ffmpeg",
+        _FFMPEG,
         "-i", video_path,
         "-vf", f"select='gt(scene,{threshold})',showinfo",
         "-vsync", "vfr",
@@ -32,7 +34,10 @@ def detect_scenes(video_path: str, threshold: float = 0.3) -> tuple[list[str], l
         output_pattern,
     ]
 
-    result = subprocess.run(cmd, capture_output=True, text=True)
+    result = subprocess.run(
+        cmd, capture_output=True, text=True,
+        encoding="utf-8", errors="replace",
+    )
     # 从 stderr 的 showinfo 输出中解析时间戳
     timestamps = []
     for line in result.stderr.split("\n"):

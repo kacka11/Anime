@@ -1,7 +1,10 @@
-"""视频下载模块：通过 yt-dlp 下载 B站视频。"""
+"""视频下载模块：通过 yt-dlp + cookies 下载 B站视频。"""
+import os
 import subprocess
 
 from config import VIDEO_DIR
+
+COOKIE_FILE = os.path.join(os.path.dirname(__file__), "data", "bilibili_cookies.txt")
 
 
 def download_video(bvid: str, output_dir: str | None = None) -> str:
@@ -10,7 +13,6 @@ def download_video(bvid: str, output_dir: str | None = None) -> str:
     Returns:
         下载后的视频文件路径
     """
-    import os
     output_dir = output_dir or VIDEO_DIR
     os.makedirs(output_dir, exist_ok=True)
 
@@ -19,6 +21,7 @@ def download_video(bvid: str, output_dir: str | None = None) -> str:
 
     cmd = [
         "yt-dlp",
+        "--cookies", COOKIE_FILE,
         "-f", "bestvideo[height<=1080]+bestaudio/best[height<=1080]",
         "-o", output_path,
         "--merge-output-format", "mp4",

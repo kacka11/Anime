@@ -14,7 +14,10 @@ NAPCAT_URL = os.getenv("NAPCAT_URL", "http://localhost:3000")
 WHISPER_MODEL = os.getenv("WHISPER_MODEL", "small")
 
 # 场景检测灵敏度 (0~1，越低越敏感)
-SCENE_THRESHOLD = float(os.getenv("SCENE_THRESHOLD", "0.3"))
+SCENE_THRESHOLD = float(os.getenv("SCENE_THRESHOLD", "0.35"))
+
+# 最小场景间隔（秒）：间隔小于此值视为同一场景，合并
+MIN_SCENE_GAP = float(os.getenv("MIN_SCENE_GAP", "1.5"))
 
 # ffmpeg 路径（winget 安装的默认路径）
 FFMPEG_BIN = os.path.join(

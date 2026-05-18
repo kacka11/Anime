@@ -33,7 +33,13 @@ def extract_audio(video_path: str) -> str:
     return audio_path
 
 
-def transcribe_audio(video_path: str, model_size: str | None = None) -> list[Segment]:
+def transcribe_audio(
+    video_path: str,
+    model_size: str | None = None,
+) -> list[Segment]:
+    # 中国用户优先使用 HF 镜像
+    if not os.environ.get("HF_ENDPOINT"):
+        os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
     """转写视频音频，返回带时间戳的片段列表。"""
     from faster_whisper import WhisperModel
 

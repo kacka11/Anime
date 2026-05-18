@@ -15,6 +15,10 @@ data/texts/
 *.wav
 !data/.gitkeep
 
+# napcat 安装器
+napcat_installer/
+napcat_onekey.zip
+
 # 模型文件（体积大）
 *.bin
 *.ggml

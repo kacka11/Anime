@@ -37,16 +37,27 @@ def transcribe_audio(
     video_path: str,
     model_size: str | None = None,
 ) -> list[Segment]:
-    # 中国用户优先使用 HF 镜像
-    if not os.environ.get("HF_ENDPOINT"):
-        os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
-    """转写视频音频，返回带时间戳的片段列表。"""
+    """转写视频音频，返回带时间戳的片段列表。
+
+    优先使用本地 models/ 目录下的预下载模型，节省每次运行时的下载时间。
+    """
     from faster_whisper import WhisperModel
 
     model_size = model_size or WHISPER_MODEL
     audio_path = extract_audio(video_path)
 
-    model = WhisperModel(model_size, device="cpu", compute_type="int8")
+    # 优先使用本地模型
+    local_model = os.path.join(
+        os.path.dirname(__file__), "models", f"faster-whisper-{model_size}"
+    )
+    if os.path.isdir(local_model):
+        model = WhisperModel(local_model, device="cpu", compute_type="int8")
+    else:
+        # 回退到在线下载
+        if not os.environ.get("HF_ENDPOINT"):
+            os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
+        model = WhisperModel(model_size, device="cpu", compute_type="int8")
+
     segments_result, _ = model.transcribe(audio_path, beam_size=5, language="zh")
 
     segments: list[Segment] = []
@@ -57,8 +68,6 @@ def transcribe_audio(
             "text": seg.text.strip(),
         })
 
-    # 保存转录结果
-    import os
     base = os.path.basename(video_path)
     json_path = os.path.join(TEXT_DIR, base.rsplit(".", 1)[0] + "_transcript.json")
     os.makedirs(TEXT_DIR, exist_ok=True)

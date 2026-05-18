@@ -54,7 +54,7 @@ def detect_scenes(video_path: str, threshold: float = 0.3) -> tuple[list[str], l
 
     # 保存时间戳
     ts_file = os.path.join(output_dir, "timestamps.json")
-    with open(ts_file, "w") as f:
+    with open(ts_file, "w", encoding="utf-8") as f:
         json.dump({"frames": frames, "timestamps": timestamps}, f, indent=2, ensure_ascii=False)
 
     return frames, timestamps

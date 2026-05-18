@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+.venv/
+venv/
+
+# 运行时数据
+data/videos/
+data/frames/
+data/texts/
+*.mp4
+*.mp3
+*.wav
+!data/.gitkeep
+
+# 模型文件（体积大）
+*.bin
+*.ggml
+models/
+
+# 配置（含敏感信息）
+config.local.py
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+.DS_Store
